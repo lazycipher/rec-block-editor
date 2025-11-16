@@ -1,8 +1,8 @@
-import { useEditor } from '../context/EditorContext';
-import Editor from './Editor';
+import { useEditor } from "../context/EditorContext";
+import Editor from "./Editor";
 
 const SplitView = () => {
-  const { activeTab, splitView, setSplitView, floatingWindow } = useEditor();
+  const { activeTab, splitView, floatingWindow } = useEditor();
 
   if (!splitView) return null;
 
@@ -24,4 +24,3 @@ const SplitView = () => {
 };
 
 export default SplitView;
-

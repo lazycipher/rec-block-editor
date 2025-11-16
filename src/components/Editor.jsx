@@ -120,9 +120,15 @@ const Editor = ({ docId, isReference = false }) => {
     setSelectedCommandIndex(0);
   };
 
-  const handleEnter = (blockId, afterCursor = "") => {
+  const handleEnter = (blockId, afterCursor = "", beforeCursor = "") => {
     const currentBlock = documents[docId]?.blocks.find((b) => b.id === blockId);
-    const blockType = currentBlock?.type || "paragraph";
+    if (!currentBlock) return;
+    
+    const blockType = currentBlock.type || "paragraph";
+
+    // Update current block to ensure it only contains content before cursor
+    // This is a safety measure in case BlockRenderer's update hasn't applied yet
+    updateBlock(docId, blockId, { content: beforeCursor });
 
     const newBlock = {
       id: `block-${Date.now()}-${Math.random()}`,

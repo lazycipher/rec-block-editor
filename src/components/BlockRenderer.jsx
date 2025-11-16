@@ -231,7 +231,7 @@ const BlockRenderer = ({ block, docId, isFloating = false, onEnter, onSlash, onA
       const currentContent = editableRef.current?.textContent || '';
       updateBlock(docId, block.id, { content: currentContent });
       if (onEnter) {
-        onEnter(block.id, '');
+        onEnter(block.id, '', currentContent);
       }
       return;
     }
@@ -256,7 +256,7 @@ const BlockRenderer = ({ block, docId, isFloating = false, onEnter, onSlash, onA
           updateBlock(docId, block.id, { content: currentContent });
           // Create new block below
           if (onEnter) {
-            onEnter(block.id, '');
+            onEnter(block.id, '', currentContent);
           }
           return;
         }
@@ -294,10 +294,27 @@ const BlockRenderer = ({ block, docId, isFloating = false, onEnter, onSlash, onA
         cursorRange.deleteContents();
         beforeCursor = editableRef.current?.textContent || '';
         afterCursor = '';
-      } else if (cursorRange) {
-        // Split content at cursor position
-        beforeCursor = currentContent.substring(0, cursorRange.startOffset);
-        afterCursor = currentContent.substring(cursorRange.startOffset);
+      } else if (cursorRange && editableRef.current) {
+        // Calculate the actual offset in the full text content
+        // range.startOffset is relative to the text node, not the entire content
+        let offset = 0;
+        try {
+          const rangeToCursor = document.createRange();
+          rangeToCursor.setStart(editableRef.current, 0);
+          rangeToCursor.setEnd(cursorRange.startContainer, cursorRange.startOffset);
+          offset = rangeToCursor.toString().length;
+        } catch {
+          // Fallback: use startOffset directly if range calculation fails
+          // This can happen if the range is in an unexpected state
+          offset = cursorRange.startOffset;
+        }
+        
+        // Ensure offset doesn't exceed content length
+        offset = Math.min(offset, currentContent.length);
+        
+        // Split content at cursor position using the calculated offset
+        beforeCursor = currentContent.substring(0, offset);
+        afterCursor = currentContent.substring(offset);
       }
       // If no range, beforeCursor = currentContent, afterCursor = '' (already set)
       
@@ -307,8 +324,9 @@ const BlockRenderer = ({ block, docId, isFloating = false, onEnter, onSlash, onA
         updateBlock(docId, block.id, { content: beforeCursor });
         
         // Create new block below with content after cursor
+        // Pass beforeCursor as well to ensure handleEnter can update the current block correctly
         if (onEnter) {
-          onEnter(block.id, afterCursor);
+          onEnter(block.id, afterCursor, beforeCursor);
         }
       });
       
