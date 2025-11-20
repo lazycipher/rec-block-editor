@@ -16,6 +16,7 @@
   "theme_color": "#312e81",
   "background_color": "#ffffff",
   "display": "standalone",
-  "start_url": "/recon-editor/"
+  "start_url": "/rec-block-editor/",
+  "scope": "/rec-block-editor/"
 }
 
