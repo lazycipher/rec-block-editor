@@ -18,7 +18,7 @@ const AppContent = () => {
   }, [activeTab, navigate, location]);
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="h-screen flex flex-col bg-white relative">
       <TabBar />
       <Routes>
         <Route
@@ -57,7 +57,7 @@ const DocumentRoute = () => {
   }
 
   return splitView ? (
-    <div className="flex-1 overflow-scroll relative">
+    <div className="flex-1 overflow-scroll">
       <button
         onClick={() => setSplitView(!splitView)}
         className={`px-4 py-3 text-sm rounded-xl cursor-pointer absolute bottom-2 left-2 ${
@@ -71,7 +71,7 @@ const DocumentRoute = () => {
       <SplitView />
     </div>
   ) : (
-    <div className="flex-1 overflow-scroll relative">
+    <div className="flex-1 overflow-scroll">
       <button
         onClick={() => setSplitView(!splitView)}
         className={`px-4 py-3 text-sm rounded-xl cursor-pointer absolute bottom-2 left-2 ${

@@ -1,5 +1,6 @@
 import { useEditor } from "../context/EditorContext";
 import { useNavigate } from "react-router-dom";
+import Logo from "../assets/logo.png";
 
 const TabBar = () => {
   const { tabs, activeTab, setActiveTab, closeTab, documents, createDocument } =
@@ -21,6 +22,13 @@ const TabBar = () => {
 
   return (
     <div className="flex items-center bg-gray-100 border-b border-gray-300 overflow-x-auto">
+      <div className="px-2 py-1 flex items-center">
+        <img
+          src={Logo}
+          alt="Recon Editor logo"
+          className="h-8 w-auto object-contain"
+        />
+      </div>
       {allDocumentIds.map((tabId) => {
         const doc = documents[tabId];
         if (!doc) return null;
